@@ -4,17 +4,17 @@ server:
     context-path: /market
 spring:
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:mydatabase;MODE=PostgreSQL
-    username: sa
-    password:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://ec2-54-89-105-122.compute-1.amazonaws.com:5432/davu7sdk8kt2mm
+    username: grbthbwtpnnifx
+    password: 0b106982f498dc70b729468fd9753d822bba7efc3fd9daf2c0f3129682888073
   jpa:
     show-sql: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   h2:
     console:
       enabled: true
       settings:
-        web-allow-others: false
+        web-allow-others: true
