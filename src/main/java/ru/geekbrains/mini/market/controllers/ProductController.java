@@ -24,6 +24,8 @@ import ru.geekbrains.mini.market.exceptions.ResourceNotFoundException;
 import ru.geekbrains.mini.market.repositories.ProductRepository;
 import ru.geekbrains.mini.market.service.ProductService;
 
+import javax.persistence.EntityNotFoundException;
+
 @RestController
 @RequestMapping("/api/v1/products")
 @Api("Set of endpoints for products")
@@ -50,26 +52,23 @@ public class ProductController {
 
     @PostMapping
     @ApiOperation("Creates a new product. If id != null, then throw bad request response")
-    public ResponseEntity<?> createNewProduct(@RequestBody ProductDto p) {
+    public ProductDto createNewProduct(@RequestBody ProductDto p) {
         if (p.getId() != null) {
-            return new ResponseEntity<>(new MarketError(HttpStatus.BAD_REQUEST.value(), "Id must be null for new " +
-                    "entity"), HttpStatus.BAD_REQUEST);
+            throw new IllegalArgumentException();
         }
-        return new ResponseEntity<>(new ProductDto(productService.save(p)), HttpStatus.CREATED);
+        return new ProductDto(productService.save(p));
     }
 
     @PutMapping
     @ApiOperation("Modify product")
-    public ResponseEntity<?> modifyProduct(@RequestBody ProductDto p) {
+    public ProductDto modifyProduct(@RequestBody ProductDto p) {
         if (p.getId() == null) {
-            return new ResponseEntity<>(new MarketError(HttpStatus.BAD_REQUEST.value(), "Id must be not null for new " +
-                    "entity"), HttpStatus.BAD_REQUEST);
+            throw new IllegalArgumentException();
         }
         if (!productService.existsById(p.getId())) {
-            return new ResponseEntity<>(new MarketError(HttpStatus.BAD_REQUEST.value(),
-                    "Product with id: " + p.getId() + " doesn't exist"), HttpStatus.BAD_REQUEST);
+            throw new EntityNotFoundException();
         }
-        return new ResponseEntity<>(new ProductDto(productService.save(p)), HttpStatus.OK);
+        return new ProductDto(productService.save(p));
     }
 
     @DeleteMapping("/{id}")
